@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: 0.5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id='chat' action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <!-- scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    (function () {
+        let socket = io();
+        document.getElementById('chat').addEventListener('submit', (e) => {
+            e.preventDefault(); // prevents page reloading
+            let message = document.getElementById('m');
+
+            socket.emit('chat message', message.value)
+            message.value = "";
+
+            return false;
+        })
+        socket.on('chat message', function(msg) { 
+            let chatWindow = document.getElementById('messages');
+            let newMsg = document.createElement("LI");
+            let text = document.createTextNode(msg);
+
+            newMsg.appendChild(text);
+            chatWindow.appendChild((newMsg));
+        });
+
+    })();
+    </script>
+  </body>
+</html>
