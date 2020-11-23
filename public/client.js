@@ -1,25 +1,13 @@
 let socket = io();
 
-document.getElementById('chat').addEventListener('submit', (e) => {
-    e.preventDefault(); // prevents page reloading
-    let message = document.getElementById('m');
-
-    socket.emit('chat message', {
-        message: message.value, 
-        user: userName, 
-    });
-
-    message.value = "";
-
-    return false;
-})
-
 let userName = "";
 
-const newUserConnected = (user) => {
-    userName = user || `User${Math.floor(Math.random() * 1000000)}`;
+function newUserConnected(user) {
+    userName = user || `User${Math.floor(Math.random() * 10000)}`;
     socket.emit("new user", userName);
 };
+
+newUserConnected();
 
 socket.on('new user', function (userConnect) {
     let chatWindow = document.getElementById('messages');
@@ -56,4 +44,16 @@ socket.on('chat message', function ({message, user}) {
     chatWindow.appendChild((newMsg));
 });
 
-newUserConnected();
+document.getElementById('chat').addEventListener('submit', (e) => {
+    e.preventDefault(); // prevents page reloading
+    let message = document.getElementById('m');
+
+    socket.emit('chat message', {
+        message: message.value, 
+        user: userName, 
+    });
+
+    message.value = "";
+
+    return false;
+});

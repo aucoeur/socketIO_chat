@@ -23,9 +23,13 @@ const io = socket(server);
 io.on('connection', (socket) => {
     console.log('Socket connected');
 
-    socket.on("new user", function (data) {
+    socket.on("new user", (data) => {
         socket.userId = data;
+
+        // Message to user/socket
         socket.emit('new user', `Welcome. You are ${socket.userId}`);
+
+        // Broadcast to other users
         socket.broadcast.emit("new user", `${socket.userId} has connected`);
     });
 
@@ -35,10 +39,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat message', (data) => {
-
-        // send only to 
+        // to send only to socket:
         // socket.emit('chat message', msg);
+        
         io.emit('chat message', data);
         console.log(JSON.stringify(data));
     });
+
 });
